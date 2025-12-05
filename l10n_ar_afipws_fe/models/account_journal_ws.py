@@ -172,7 +172,16 @@ class AccountJournalWs(models.Model):
         return ws.GetParamTipoCbte(sep=",")
 
     def wsfe_pyafipws_cuit_document_classes(self, ws):
-        return ws.ParamGetTiposCbte(sep=",")
+        ret = ws.ParamGetTiposCbte(sep=",")
+        # Verificar si hay errores en la respuesta
+        if hasattr(ws, 'Errores') and ws.Errores:
+            error_msg = " - ".join([str(e) for e in ws.Errores if e])
+            raise UserError(_("Error al consultar tipos de comprobante en AFIP: %s") % error_msg)
+        if hasattr(ws, 'ErrMsg') and ws.ErrMsg:
+            raise UserError(_("Error al consultar tipos de comprobante en AFIP: %s") % ws.ErrMsg)
+        if hasattr(ws, 'Excepcion') and ws.Excepcion:
+            raise UserError(_("Excepción al consultar tipos de comprobante en AFIP: %s") % ws.Excepcion)
+        return ret
 
     def wsbfe_pyafipws_cuit_document_classes(self, ws):
         return ws.GetParamTipoCbte()
