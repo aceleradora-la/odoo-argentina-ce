@@ -22,25 +22,25 @@
                 <field name="type" invisible="1"/>
                 <field name="company_id" invisible="1"/>
                 <header>
-                    <button name="action_print" string="Print" invisible="not state or state != 'draft'" type="object" class="oe_highlight"/>
-                    <button name="action_print" string="Print" invisible="not state or state not in ['cancel', 'presented']" type="object"/>
-                    <button name="action_present" string="Present" invisible="not state or state != 'draft'" type="object" class="oe_highlight"/>
-                    <button name="action_cancel" string="Cancel" invisible="not state or state not in ['draft', 'presented']" type="object"/>
-                    <button name="action_to_draft" string="To Draft" invisible="not state or state != 'cancel'" type="object"/>
+                    <button name="action_print" string="Print" invisible="state != 'draft'" type="object" class="oe_highlight"/>
+                    <button name="action_print" string="Print" invisible="state not in ['cancel', 'presented']" type="object"/>
+                    <button name="action_present" string="Present" invisible="state != 'draft'" type="object" class="oe_highlight"/>
+                    <button name="action_cancel" string="Cancel" invisible="state not in ['draft', 'presented']" type="object"/>
+                    <button name="action_to_draft" string="To Draft" invisible="state != 'cancel'" type="object"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,presented"/>
                 </header>
                 <sheet>
                     <group>
                         <group>
-                            <field name="company_id" widget="selection" groups="base.group_multi_company" readonly="state and state != 'draft'"/>
-                            <field name="date_from" readonly="state and state != 'draft'"/>
-                            <field name="date_to" readonly="state and state != 'draft'"/>
+                            <field name="company_id" widget="selection" groups="base.group_multi_company" readonly="state != 'draft'"/>
+                            <field name="date_from" readonly="state != 'draft'"/>
+                            <field name="date_to" readonly="state != 'draft'"/>
                             <field name="presented_ledger_name" invisible="1"/>
-                            <field name="presented_ledger" filename="presented_ledger_name" readonly="state and state != 'draft'"/>
+                            <field name="presented_ledger" filename="presented_ledger_name" readonly="state != 'draft'"/>
                         </group>
                         <group>
-                            <field name="first_page" readonly="state and state != 'draft'"/>
-                            <field name="last_page" readonly="state and state != 'draft'"/>
+                            <field name="first_page" readonly="state != 'draft'"/>
+                            <field name="last_page" readonly="state != 'draft'"/>
                             <field name="prorate_tax_credit"/>
                             <field name="prorate_type" invisible="not prorate_tax_credit" required="prorate_tax_credit"/>
                             <field name="reference"/>
@@ -51,10 +51,10 @@
                             <field name="invoice_ids"/>
                         </page>
                         <page string="Journals" name="journal_ids">
-                            <field name="journal_ids" domain="[('type', '=', type), ('company_id', '=', company_id), ('l10n_latam_use_documents', '=', True)]" readonly="state and state != 'draft'"/>
+                            <field name="journal_ids" domain="[('type', '=', type), ('company_id', '=', company_id), ('l10n_latam_use_documents', '=', True)]" readonly="state != 'draft'"/>
                         </page>
                         <page string="Archivos TXT" name="txt_files">
-                            <button name="compute_txt_data" type="object" string="Compute TXT Data" invisible="not state or state != 'draft'"/>
+                            <button name="compute_txt_data" type="object" string="Compute TXT Data" invisible="state != 'draft'"/>
                             <group>
                                 <field name="vouchers_filename" invisible="1"/>
                                 <field name="aliquots_filename" invisible="1"/>
