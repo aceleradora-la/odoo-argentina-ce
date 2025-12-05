@@ -42,7 +42,7 @@
                             <field name="first_page" readonly="state != 'draft'"/>
                             <field name="last_page" readonly="state != 'draft'"/>
                             <field name="prorate_tax_credit"/>
-                            <field name="prorate_type" invisible="not prorate_tax_credit" required="prorate_tax_credit"/>
+                            <field name="prorate_type" invisible="prorate_tax_credit == False" required="prorate_tax_credit"/>
                             <field name="reference"/>
                         </group>
                     </group>
