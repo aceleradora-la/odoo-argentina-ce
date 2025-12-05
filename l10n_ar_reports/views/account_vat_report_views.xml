@@ -42,7 +42,7 @@
                             <field name="first_page"/>
                             <field name="last_page"/>
                             <field name="prorate_tax_credit"/>
-                            <field name="prorate_type" attrs="{'invisible':[('prorate_tax_credit','=',False)],'required':[('prorate_tax_credit','=',True)]}"/>
+                            <field name="prorate_type" invisible="not prorate_tax_credit" required="prorate_tax_credit"/>
                             <field name="reference"/>
                         </group>
                     </group>
@@ -69,7 +69,7 @@
                                 <!-- <field name="REGINFO_CV_CABECERA"/> -->
                                 <field name="REGINFO_CV_CBTE"/>
                                 <field name="REGINFO_CV_ALICUOTAS"/>
-                                <field name="REGINFO_CV_COMPRAS_IMPORTACIONES" attrs="{'invisible': [('type', '!=', 'purchase')]}"/>
+                                <field name="REGINFO_CV_COMPRAS_IMPORTACIONES" invisible="type != 'purchase'"/>
                             </group>
                         </page>
                         <page string="Notes" name="notes">
