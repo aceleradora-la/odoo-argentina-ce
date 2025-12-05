@@ -172,7 +172,22 @@ class AccountJournalWs(models.Model):
         return ws.GetParamTipoCbte(sep=",")
 
     def wsfe_pyafipws_cuit_document_classes(self, ws):
-        ret = ws.ParamGetTiposCbte(sep=",")
+        try:
+            ret = ws.ParamGetTiposCbte(sep=",")
+        except KeyError as e:
+            # Si falta ResultGet en la respuesta, verificar errores del webservice
+            error_parts = []
+            if hasattr(ws, 'Errores') and ws.Errores:
+                error_parts.extend([str(e) for e in ws.Errores if e])
+            if hasattr(ws, 'ErrMsg') and ws.ErrMsg:
+                error_parts.append(str(ws.ErrMsg))
+            if hasattr(ws, 'Excepcion') and ws.Excepcion:
+                error_parts.append(str(ws.Excepcion))
+            if error_parts:
+                error_msg = " - ".join(error_parts)
+                raise UserError(_("Error al consultar tipos de comprobante en AFIP: %s") % error_msg)
+            else:
+                raise UserError(_("Error al consultar tipos de comprobante en AFIP. La respuesta del webservice no tiene la estructura esperada. Error: %s") % str(e))
         # Verificar si hay errores en la respuesta
         if hasattr(ws, 'Errores') and ws.Errores:
             error_msg = " - ".join([str(e) for e in ws.Errores if e])
