@@ -19,19 +19,16 @@ class AccountVatLedger(models.Model):
         "res.company",
         string="Company",
         required=True,
-        readonly="state != 'draft'",
         default=lambda self: self.env.company,
     )
     type = fields.Selection([("sale", "Sale"), ("purchase", "Purchase")], required=True)
     date_from = fields.Date(
         string="Start Date",
         required=True,
-        readonly="state != 'draft'",
     )
     date_to = fields.Date(
         string="End Date",
         required=True,
-        readonly="state != 'draft'",
     )
     journal_ids = fields.Many2many(
         "account.journal",
@@ -40,18 +37,12 @@ class AccountVatLedger(models.Model):
         "journal_id",
         string="Journals",
         required=True,
-        readonly="state != 'draft'",
     )
     first_page = fields.Integer(
         required=True,
-        readonly="state != 'draft'",
     )
-    last_page = fields.Integer(
-        readonly="state != 'draft'",
-    )
-    presented_ledger = fields.Binary(
-        readonly="state != 'draft'",
-    )
+    last_page = fields.Integer()
+    presented_ledger = fields.Binary()
     presented_ledger_name = fields.Char()
     state = fields.Selection(
         [("draft", "Draft"), ("presented", "Presented"), ("cancel", "Cancel")],
