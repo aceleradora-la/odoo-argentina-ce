@@ -30,7 +30,7 @@
                     <field name="state" widget="statusbar" statusbar_visible="draft,presented"/>
                 </header>
                 <sheet>
-                    <group>
+                    <group col="2">
                         <group>
                             <field name="company_id" widget="selection" groups="base.group_multi_company" readonly="state != 'draft'"/>
                             <field name="date_from" readonly="state != 'draft'"/>
