@@ -174,21 +174,29 @@ class AccountJournalWs(models.Model):
     def wsfe_pyafipws_cuit_document_classes(self, ws):
         try:
             ret = ws.ParamGetTiposCbte(sep=",")
-        except KeyError as e:
-            # Si falta ResultGet en la respuesta, verificar errores del webservice
+        except (KeyError, Exception) as e:
+            # Si falta ResultGet en la respuesta o hay cualquier error, verificar errores del webservice
             error_parts = []
             if hasattr(ws, 'Errores') and ws.Errores:
-                error_parts.extend([str(e) for e in ws.Errores if e])
+                error_parts.extend([str(err) for err in ws.Errores if err])
             if hasattr(ws, 'ErrMsg') and ws.ErrMsg:
                 error_parts.append(str(ws.ErrMsg))
             if hasattr(ws, 'Excepcion') and ws.Excepcion:
                 error_parts.append(str(ws.Excepcion))
+            if hasattr(ws, 'XmlResponse') and ws.XmlResponse:
+                # Log la respuesta XML para debugging
+                _logger.error("AFIP XML Response: %s" % ws.XmlResponse)
             if error_parts:
                 error_msg = " - ".join(error_parts)
                 raise UserError(_("Error al consultar tipos de comprobante en AFIP: %s") % error_msg)
             else:
-                raise UserError(_("Error al consultar tipos de comprobante en AFIP. La respuesta del webservice no tiene la estructura esperada. Error: %s") % str(e))
-        # Verificar si hay errores en la respuesta
+                # Si no hay errores específicos, mostrar el error genérico
+                error_detail = str(e)
+                if "ResultGet" in error_detail:
+                    raise UserError(_("Error al consultar tipos de comprobante en AFIP. La respuesta del webservice no tiene la estructura esperada. Esto puede indicar un problema de conexión o autenticación con AFIP."))
+                else:
+                    raise UserError(_("Error al consultar tipos de comprobante en AFIP: %s") % error_detail)
+        # Verificar si hay errores en la respuesta después de la llamada
         if hasattr(ws, 'Errores') and ws.Errores:
             error_msg = " - ".join([str(e) for e in ws.Errores if e])
             raise UserError(_("Error al consultar tipos de comprobante en AFIP: %s") % error_msg)
